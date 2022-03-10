@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Nubernetes ECR Repository"
+
+Parameters:
+  Prefix:
+    Type: String
+    Description: ECR Repostory Prefix
+
+Resources:
+
+  NubernetesECR:
+    Type: AWS::ECR::Repository
+    Properties: 
+      RepositoryName: !Sub "${Prefix}-nubernetes"
+      RepositoryPolicyText: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Sid: AllowPushPull
+            Effect: Allow
+            Principal: 
+              AWS: 
+                - !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: 
+              - "ecr:GetDownloadUrlForLayer"
+              - "ecr:BatchGetImage"
+              - "ecr:BatchCheckLayerAvailability"
+              - "ecr:PutImage"
+              - "ecr:InitiateLayerUpload"
+              - "ecr:UploadLayerPart"
+              - "ecr:CompleteLayerUpload"
+              - "ecr:GetAuthorizationToken"
+
+Outputs:
+  ECRRepoName:
+    Value: !Ref NubernetesECR
+    Description: ECR Repository Name
