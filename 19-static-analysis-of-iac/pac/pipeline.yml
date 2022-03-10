@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  GitHubToken:
+    Type: String
+    Description: GitHub user access token
+  SourceCodeRepo:
+    Type: String
+    Description: GitHub Repo URL
+  SourceCodeBranch:
+    Type: String
+    Description: GitHub Repo Branch    
+  BuildSpecFilePath:
+    Type: String
+    Description: Path of buildspec.yml in repo
+  ProjectName:
+    Type: String
+    Description: Name for the Project
+Resources:
+  CodeBuildSourceCredential:
+    Type: 'AWS::CodeBuild::SourceCredential'
+    Properties:
+      Token: !Ref GitHubToken
+      ServerType: GITHUB
+      AuthType: PERSONAL_ACCESS_TOKEN
+  Project:
+    Type: 'AWS::CodeBuild::Project'
+    Properties:
+      Name: !Ref ProjectName
+      Description: Generic CodeBuild Project
+      ServiceRole: !GetAtt 
+        - BuildServiceRole
+        - Arn
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: 'aws/codebuild/amazonlinux2-x86_64-standard:1.0'
+        PrivilegedMode: 'True'
+        EnvironmentVariables:
+          - Name: PROJECT_NAME
+            Value: !Ref ProjectName
+      Source:
+        Location: !Ref SourceCodeRepo
+        BuildSpec: !Ref BuildSpecFilePath
+        Type: GITHUB
+      SourceVersion: !Ref SourceCodeBranch
+      TimeoutInMinutes: 60
+    DependsOn:
+      - CodeBuildSourceCredential
+      - BuildServiceRole
+  BuildServiceRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AdministratorAccess'
