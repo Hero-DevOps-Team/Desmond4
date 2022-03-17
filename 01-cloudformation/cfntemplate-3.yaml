@@ -3,7 +3,8 @@ AWSTemplateFormatVersion: 2010-09-09
 Resources:
   Topic:
     Type: AWS::S3::Bucket
-    Properties: !Join
- 	 - 'mystorageS3'
-   	 - ':s3:::elasticbeanstalk-*-'
-   	 - !Ref AWS::AccountId
+    Properties: 
+      BucketName: !Join
+        - '-'
+        - - 'mystoragas3'
+          - !Ref 'AWS::AccountId' 
