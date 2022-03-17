@@ -1,0 +1,5 @@
+Lab 1.1.5
+
+What happens when  i try to delete the stack from AWS CLI  which i've just enabled the termination protection, using the command --> aws cloudformation delete-stack  --stack-name stacksintelligent , i got the following message --> An error occurred (AccessDenied) when calling the DeleteStack operation: User: arn:aws:iam::324320755747:user/desmond.ndambi.labs is not authorized to perform: cloudformation:DeleteStack on resource: arn:aws:cloudformation:us-east-1:324320755747:stack/stacksintelligent/7375caf0-a57c-11ec-8454-0e4b061813b3 with an explicit deny in an identity-based policy 
+
+Trying to delete it from the AWS GUI yields this message --> "Termination protection is enabled on this stack. You must first disable termination protection on this stack before deleting it"
