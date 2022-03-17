@@ -1,0 +1,8 @@
+{
+  "StackName" : "stacksintelligent",
+    "Parameters": [
+	{ "ParameterKey": "A", "ParameterValue": "a" },
+	{"ParameterKey": "B", "ParameterValue": "b" }
+
+	],
+}
