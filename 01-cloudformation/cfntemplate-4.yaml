@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Conditions:
+  PreferredRegion: !Equals
+    - !Ref 'AWS::Region'
+    - us-east-1
+  AllRegion: !Not [!Equals [!Ref 'AWS::Region', us-east-1]]
+Resources:
+  Topic:
+    Type: AWS::S3::Bucket
+    Condition: PreferredRegion
+    Properties:
+      BucketName: !Join
+        - '-'
+        - - 'mystoragas3'
+          - !Ref 'AWS::AccountId'
+    Condition: AllRegion
+    Properties: 
+      BucketName: !Join
+        - '-'
+        - - 'mystoragas3'
+          - !Ref 'AWS::Region'
