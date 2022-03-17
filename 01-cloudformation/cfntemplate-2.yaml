@@ -4,4 +4,4 @@ Resources:
   Topic:
     Type: AWS::S3::Bucket
     Properties:
-	BucketName: "mystorageS3"
+	BucketName: "mystorages3"
