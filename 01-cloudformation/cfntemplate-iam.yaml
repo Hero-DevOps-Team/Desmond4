@@ -1,1 +1,34 @@
 
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  UsernameID:
+    Type: String
+    ParameterProperty: dezo@stelligent.ai
+
+Resources:
+
+IAMUser:
+ Type: AWS::IAM::User
+Properties:
+  Groups: Administrators
+  LoginProfile: dezo
+  Policies: Thoushall
+  UserName: !Ref UsernameID
+
+
+Policy:
+ Type: 'AWS::IAM::Policy'
+ Properties:
+   PolicyName: Thoushall
+   PolicyDocument:
+     Version: "2012-10-17"
+     Statement:
+       - Effect: Allow
+         Action:
+           - 'cloudformation:Describe*'
+           - 'cloudformation:List*'
+           - 'cloudformation:Get*'
+         Resource: '*'
+   Groups:
+     - !Ref Administrators
