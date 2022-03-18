@@ -22,7 +22,7 @@ Properties:
 
 
 Policy:
- Type: AWS::IAM::Policy
+ Type: AWS::IAM::ManagedPolicy
  Properties:
    PolicyName: Thoushall
    PolicyDocument:
