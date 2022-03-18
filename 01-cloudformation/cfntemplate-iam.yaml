@@ -18,7 +18,7 @@ Properties:
   Groups: Administrators
   LoginProfile: dezo
   Policies: Thoushall
-  UserName: !Ref UsernameID
+  UserName: UsernameID
 
 
 Policy:
@@ -39,4 +39,4 @@ Policy:
            - 's3-object-lambda:List*'
          Resource: '*'
    Groups:
-     - !Ref Administrators
+     -  Administrators
