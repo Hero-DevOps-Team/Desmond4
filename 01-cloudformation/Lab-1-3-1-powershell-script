@@ -1,0 +1,18 @@
+$template = Get-Content -Path C:\temp\simple-s3-bucket-cfntemplate.yaml -Raw
+
+
+# bucketname parameter
+$bucketname = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
+$bucketname.ParameterKey = 'BucketName'
+$bucketname.ParameterValue = 'globally-unique-bucket-name'
+
+# project value for the project tag
+$project = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
+$project.ParameterKey = 'ProjectTag'
+$project.ParameterValue = 'demo'
+
+
+New-CFNStack -StackName s3-demo-stack -TemplateBody $template -Parameter $bucketname, $project
+
+
+(Get-CFNStack -StackName s3-demo-stack).Outputs
