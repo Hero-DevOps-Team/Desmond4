@@ -10,9 +10,7 @@ Resources:
 S3Bucket:
  Type: AWS::S3::Bucket
  Properties:
-    BucketName: !Join
-        - '-'
-        - - 'mystoragas3
+    BucketName: mystorages3
 
 IAMUser:
  Type: AWS::IAM::User
