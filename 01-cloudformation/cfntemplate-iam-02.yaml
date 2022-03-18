@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  UsernameID:
+    Type: String
+    ParameterProperty: dezo@stelligent.ai
+
+Resources:
+
+S3Bucket:
+ Type: AWS::S3::Bucket
+ Properties:
+    BucketName: mystorages3
+
+IAMUser:
+ Type: AWS::IAM::User
+Properties:
+  Groups: Administrators
+  LoginProfile: dezo
+  Policies: Thoushall
+  UserName: UsernameID
+
+
+Policy:
+ Type: AWS::IAM::Policy
+ Properties:
+   PolicyName: Thoushall
+   PolicyDocument:
+     Version: "2012-10-17"
+     Statement:
+       - Effect: Allow
+         Action:
+           - 'cloudformation:Describe*'
+           - 'cloudformation:List*'
+           - 'cloudformation:Get*'
+           - 's3:Get*'
+           - 's3:List*'
+           - 's3-object-lambda:Get*'
+           - 's3-object-lambda:List*'
+         Resource: '*'
+   Groups:
+     -  Administrators
+
+Outputs:
+  ARN:
+    Description: Information about the Amazon Resource Name managed policy
+    Value: 1
+    Export:
+      Name: Thoushall
