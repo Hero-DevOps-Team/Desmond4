@@ -44,6 +44,6 @@ Policy:
 Outputs:
   ARN:
     Description:  Standalone policy
-    Value: 1
+    Value: 10
     Export:
       Name: arn:aws:iam::aws:policy/Thoushall
