@@ -29,6 +29,10 @@ Policy:
            - 'cloudformation:Describe*'
            - 'cloudformation:List*'
            - 'cloudformation:Get*'
+           - 's3:Get*'
+           - 's3:List*'
+           - 's3-object-lambda:Get*'
+           - 's3-object-lambda:List*'      
          Resource: '*'
    Groups:
      - !Ref Administrators
