@@ -8,6 +8,14 @@ Parameters:
 
 Resources:
 
+S3Bucket:
+ Type: AWS::S3::Bucket
+ Properties:
+    BucketName: !Join
+        - '-'
+        - - 'mystoragas3'
+          - !Ref 'AWS::AccountId'
+
 IAMUser:
  Type: AWS::IAM::User
 Properties:
