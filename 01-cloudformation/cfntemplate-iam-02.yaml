@@ -43,7 +43,7 @@ Policy:
 
 Outputs:
   ARN:
-    Description: Information about the Amazon Resource Name managed policy
+    Description:  Standalone policy
     Value: 1
     Export:
-      Name: Thoushall
+      Name: arn:aws:iam::aws:policy/Thoushall
