@@ -1,3 +1,9 @@
+
+
+
+$template = Get-Content -Path C:\temp\simple-s3-bucket-cfntemplate.yaml -Raw
+
+
 # bucketname parameter
 $bucketname = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
 $bucketname.ParameterKey = 'BucketName'
@@ -10,6 +16,8 @@ $project.ParameterValue = 'demo'
 # region
 $region = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
 $region.ParameterKey= 'region'
+
+jq . regionparams.yaml
 
 $numbers = 1
 
@@ -46,5 +54,4 @@ $number = $number + 1
 (Get-CFNStack -StackName $stackname).Outputs
 
 } While ($number –lt 3)
-
 
