@@ -4,6 +4,9 @@ Parameters:
   BucketName:
     Description: Name of the S3 bucket must be globally unique and can contain lowercase characters, numbers and hyphens
     Type: String
+  FriendlyName:
+    Type: String
+    Default: demo
   ProjectTag:
     Description: Tag value for the project
     Type: String
