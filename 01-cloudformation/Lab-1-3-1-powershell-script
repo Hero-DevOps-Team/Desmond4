@@ -44,3 +44,7 @@ New-CFNStack -StackName $stackname -TemplateBody $template -Parameter $bucketnam
 $number = $number + 1
 
 (Get-CFNStack -StackName $stackname).Outputs
+
+} While ($number –lt 3)
+
+
