@@ -1,8 +1,6 @@
-
 # bucketname parameter
 $bucketname = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
 $bucketname.ParameterKey = 'BucketName'
-$bucketname.ParameterValue = 'globally-unique-bucket-name'
 
 # project value for the project tag
 $project = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
@@ -21,6 +19,8 @@ $region.ParameterValue= 'us-east-' + $numbers
 
 $stackname='s3-stack'+ $numbers
 
+$bucketname.ParameterValue = 'stelligent-dezo-bucket' + $numbers
+
 New-CFNStack -StackName $stackname -TemplateBody $template -Parameter $bucketname, $project, $region
 
 $numbers = $numbers + 1
@@ -37,10 +37,10 @@ $region.ParameterValue= 'us-west-' + $number
 
 $stackname='s3-stack'+ $number
 
+$bucketname.ParameterValue = 'stelligent-dezo-bucket' + $number
+
 New-CFNStack -StackName $stackname -TemplateBody $template -Parameter $bucketname, $project, $region
 
 $number = $number + 1
 
 (Get-CFNStack -StackName $stackname).Outputs
-
-} While ($number –lt 3)
