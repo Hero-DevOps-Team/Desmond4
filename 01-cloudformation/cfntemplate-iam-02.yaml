@@ -28,7 +28,7 @@ Resources:
             Resource: "*"
         Version: "2012-10-17"
       PolicyName: Thoushall
-    Type: "AWS::IAM::Policy"
+    Type: "AWS::IAM::ManagedPolicy"
   S3Bucket:
     Properties:
       BucketName: mystorages3
