@@ -1,5 +1,3 @@
-$template = Get-Content -Path C:\temp\simple-s3-bucket-cfntemplate.yaml -Raw
-
 
 # bucketname parameter
 $bucketname = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
@@ -11,8 +9,38 @@ $project = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
 $project.ParameterKey = 'ProjectTag'
 $project.ParameterValue = 'demo'
 
+# region
+$region = New-Object -TypeName Amazon.CloudFormation.Model.Parameter
+$region.ParameterKey= 'region'
 
-New-CFNStack -StackName s3-demo-stack -TemplateBody $template -Parameter $bucketname, $project
+$numbers = 1
 
+Do {
 
-(Get-CFNStack -StackName s3-demo-stack).Outputs
+$region.ParameterValue= 'us-east-' + $numbers
+
+$stackname='s3-stack'+ $numbers
+
+New-CFNStack -StackName $stackname -TemplateBody $template -Parameter $bucketname, $project, $region
+
+$numbers = $numbers + 1
+
+(Get-CFNStack -StackName $stackname).Outputs
+
+} While ($numbers –lt 3)
+
+$number = 1
+
+Do {
+
+$region.ParameterValue= 'us-west-' + $number
+
+$stackname='s3-stack'+ $number
+
+New-CFNStack -StackName $stackname -TemplateBody $template -Parameter $bucketname, $project, $region
+
+$number = $number + 1
+
+(Get-CFNStack -StackName $stackname).Outputs
+
+} While ($number –lt 3)
