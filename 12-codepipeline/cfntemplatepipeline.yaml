@@ -1,77 +1,78 @@
+--- 
 AWSTemplateFormatVersion: 2010-09-09
-
-
-Resources:
-  Apppipelines:
-    Type: AWS::CodePipeline::Pipeline
-    Properties:
-      Name: dafirstci-cd
-      RestartExecutionOnUpdate: True
-      ArtifactStore:
-        Type: S3 
-        Location:
-          Ref: ArtifactStoreS3Location 
-        EncryptionKey:
-          Id: arn:aws:iam::324320755747:user/desmond.ndambi.labs
-	  Type: KMS
+Resources: 
+  Apppipelines: 
+    Properties: 
+      ArtifactStore: 
+        EncryptionKey: 
+          Id: "arn:aws:iam::324320755747:user/desmond.ndambi.labs"
+        Location: 
+          Ref: ArtifactStoreS3Location
+        Type: S3
       DisableInboundStageTransitions: 
-      - 
-        StageName: Release 
-        Reason: "Disabling the transition until integration tests are completed"
-      RoleArn:
-        Ref: CodePipelineServiceRole 
-      Tags:
-        - Key: Project
-          Value: ProjectA
-        - Key: IsContainerBased
-          Value: 'true'
+        - 
+          Reason: "Disabling the transition until integration tests are completed"
+          StageName: Release
+      Name: dafirstci-cd
+      RestartExecutionOnUpdate: true
+      RoleArn: 
+        Ref: CodePipelineServiceRole
       Stages: 
-      - 
-        Name: Source 
-        Actions:  
-          - 
-            Name: SourceAction 
-            InputArtifacts: 
-              -
-                Name: SourceOutput 
-            ActionTypeId: 
-              Category: Deploy 
-              Owner: AWS 
-              Version: 1 
-              Provider: CodeDeploy
-            Configuration: 
-              ApplicationName: 
-                Ref: Stelligent 
-              DeploymentGroupName: 
-                Ref: DeploymentGroupName 
-	     RunOrder: 1
-      - 
-        Name: Deploy
-        Actions: 
-          - 
-            Name: DeployAction
-            InputArtifacts: 
-              - 
-                Name: DeployOutput 
-            ActionTypeId: 
-              Category: Deploy 
-              Owner: AWS 
-              Version: 1
-              Provider: CodeDeploy 
-            Configuration: 
-              ApplicationName: 
-                Ref: Stelligent
-              DeploymentGroupName: 
-                Ref: DeploymentGroupName 
-            RunOrder: 2 
-  Policy:
-    Properties:
-      Groups:
+        - 
+          Actions: 
+            - 
+              ActionTypeId: 
+                Category: Deploy
+                Owner: AWS
+                Provider: CodeDeploy
+                Version: 1
+              Configuration: 
+                ApplicationName: 
+                  - 
+                    Ref: Stelligent
+                DeploymentGroupName: 
+                  - 
+                    Ref: StelligentAdmins
+              InputArtifacts: 
+                - 
+                  Name: SourceOutput
+              Name: SourceAction
+          Name: Source
+        - 
+          Actions: 
+            - 
+              ActionTypeId: 
+                Category: Deploy
+                Owner: AWS
+                Provider: CodeDeploy
+                Version: 1
+              Configuration: 
+                ApplicationName: 
+                  Ref: Stelligent
+                DeploymentGroupName: 
+                  Ref: DeploymentGroupName
+              InputArtifacts: 
+                - 
+                  Name: DeployOutput
+              Name: DeployAction
+              RunOrder: 2
+          Name: Deploy
+      Tags: 
+        - 
+          Key: Project
+          Value: ProjectA
+        - 
+          Key: IsContainerBased
+          Value: "true"
+    Type: "AWS::CodePipeline::Pipeline"
+  Policy: 
+    Properties: 
+      Groups: 
         - Administrators
-      PolicyDocument:
-        Statement:
-          -
-            Action:
+      PolicyDocument: 
+        Statement: 
+          - 
+            Action: 
               - "codedeploy:CreateDeployment"
               - "codedeploy:GetDeployment"
               - "codedeploy:GetApplication"
@@ -88,8 +89,7 @@ Resources:
         Version: "2012-10-17"
       PolicyName: Thoushould
     Type: "AWS::IAM::Policy"
-  S3bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-       BucketName: ArtifactStoreS3Location
-  
+  S3bucket: 
+    Properties: 
+      BucketName: ArtifactStoreS3Location
+    Type: "AWS::S3::Bucket"
