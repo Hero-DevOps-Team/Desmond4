@@ -1,0 +1,111 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09T00:00:00.000Z",
+  "Resources": {
+    "Apppipelines": {
+      "Properties": {
+        "ArtifactStore": {
+          "EncryptionKey": {
+            "Id": "arn:aws:iam::324320755747:user/desmond.ndambi.labs"
+          },
+          "Type": "S3"
+        },
+        "DisableInboundStageTransitions": [
+          {
+            "Reason": "Disabling the transition until integration tests are completed"
+          }
+        ],
+        "Name": "dafirstci-cd",
+        "RestartExecutionOnUpdate": true,
+        "Stages": [
+          {
+            "Actions": [
+              {
+                "ActionTypeId": {
+                  "Category": "Deploy",
+                  "Owner": "AWS",
+                  "Provider": "CodeDeploy",
+                  "Version": 1
+                },
+                "InputArtifacts": [
+                  {
+                    "Name": "SourceOutput"
+                  }
+                ],
+                "Name": "SourceAction"
+              }
+            ],
+            "Name": "Source"
+          },
+          {
+            "Actions": [
+              {
+                "ActionTypeId": {
+                  "Category": "Deploy",
+                  "Owner": "AWS",
+                  "Provider": "CodeDeploy",
+                  "Version": 1
+                },
+                "InputArtifacts": [
+                  {
+                    "Name": "DeployOutput"
+                  }
+                ],
+                "Name": "DeployAction",
+                "RunOrder": 2
+              }
+            ],
+            "Name": "Deploy"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "ProjectA"
+          },
+          {
+            "Key": "IsContainerBased",
+            "Value": "true"
+          }
+        ]
+      },
+      "Type": "AWS::CodePipeline::Pipeline"
+    },
+    "Policy": {
+      "Properties": {
+        "Groups": [
+          "Administrators"
+        ],
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "codedeploy:CreateDeployment",
+                "codedeploy:GetDeployment",
+                "codedeploy:GetApplication",
+                "codedeploy:GetApplicationRevision",
+                "codedeploy:RegisterApplicationRevision",
+                "codedeploy:GetDeploymentConfig",
+                "ecs:RegsiterTaskDefinition",
+                "s3:Get*",
+                "s3:List*",
+                "s3-object-lambda:Get*",
+                "s3-object-lambda:List*"
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::324320755747:user/desmond.ndambi.labs"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "Thoushould"
+      },
+      "Type": "AWS::IAM::Policy"
+    },
+    "S3bucket": {
+      "Properties": {
+        "BucketName": "stagesbucket"
+      },
+      "Type": "AWS::S3::Bucket"
+    }
+  }
+}
