@@ -43,14 +43,7 @@ Resources:
               ApplicationName: 
                 Ref: Stelligent 
               DeploymentGroupName: 
-                Ref: DeploymentGroupName  
-            Trigger:
-   	 	branches:
-    		  include:
-    		    - master
-    		    - releases/*
-   		  exclude:
-   		    - releases/old*
+                Ref: DeploymentGroupName 
 	     RunOrder: 1
       - 
         Name: Deploy
