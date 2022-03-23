@@ -1,78 +1,134 @@
---- 
-AWSTemplateFormatVersion: 2010-09-09
-Resources: 
-  Apppipelines: 
-    Properties: 
-      ArtifactStore: 
-        EncryptionKey: 
-          Id: "arn:aws:iam::324320755747:user/desmond.ndambi.labs"
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Desmond-pipeline
+
+Parameters:
+  # *** This value must always be passed in when creating / updating stack
+  # "NoEcho" is set to true, for security, so token won't be visible when examining the resulting stack
+  GitHubOAuthToken:
+    Type: String
+    NoEcho: true
+    MinLength: 40
+    MaxLength: 40
+    AllowedPattern: '[a-z0-9]*'
+
+  # *** The remaining parameters should either be:
+  # - overridden via changing "Default" here (PREFERABLE, since then they're in source control)
+  # - or you can pass them in when creating / updating the stack
+  
+  # *** The owner of the Github repo for this application.
+  GitHubOwner:
+    Type: String
+    Default: Dezo2018
+    AllowedPattern: "[A-Za-z0-9-]+"
+
+  GitHubRepo:
+    Type: String
+    Default: CodePipeline
+    AllowedPattern: "[A-Za-z0-9-]+"
+
+  GitHubBranch:
+    Type: String
+    Default: master
+    AllowedPattern: "[A-Za-z0-9-]+"
+
+  # *** The stack name for the actual application we're deploying
+  ApplicationStackName:
+    Type: String
+    Default: stelligent-desmond-app
+    AllowedPattern: "[A-Za-z0-9-]+"
+
+Resources:
+  PipelineArtifactsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore:
         Type: S3
-      DisableInboundStageTransitions: 
-        - 
-          Reason: "Disabling the transition until integration tests are completed"
-      Name: dafirstci-cd
+        Location: !Ref PipelineArtifactsBucket
       RestartExecutionOnUpdate: true
-      Stages: 
-        - 
-          Actions: 
-            - 
-              ActionTypeId: 
-                Category: Deploy
-                Owner: AWS
-                Provider: CodeDeploy
-                Version: 1
-              InputArtifacts: 
-                - 
-                  Name: SourceOutput
-              Name: SourceAction
-          Name: Source
-        - 
-          Actions: 
-            - 
-              ActionTypeId: 
-                Category: Deploy
-                Owner: AWS
-                Provider: CodeDeploy
-                Version: 1
-              InputArtifacts: 
-                - 
-                  Name: DeployOutput
-              Name: DeployAction
-              RunOrder: 2
-          Name: Deploy
-      Tags: 
-        - 
-          Key: Project
-          Value: ProjectA
-        - 
-          Key: IsContainerBased
-          Value: "true"
-    Type: "AWS::CodePipeline::Pipeline"
-  Policy: 
-    Properties: 
-      Groups: 
-        - Administrators
-      PolicyDocument: 
-        Statement: 
-          - 
-            Action: 
-              - "codedeploy:CreateDeployment"
-              - "codedeploy:GetDeployment"
-              - "codedeploy:GetApplication"
-              - "codedeploy:GetApplicationRevision"
-              - "codedeploy:RegisterApplicationRevision"
-              - "codedeploy:GetDeploymentConfig"
-              - "ecs:RegsiterTaskDefinition"
-              - "s3:Get*"
-              - "s3:List*"
-              - "s3-object-lambda:Get*"
-              - "s3-object-lambda:List*"
-            Effect: Allow
-            Resource: "arn:aws:iam::324320755747:user/desmond.ndambi.labs"
+      RoleArn: !GetAtt CodePipelineRole.Arn
+      Stages:
+      - Name: Source
+        Actions:
+        - Name: Source
+          InputArtifacts: []
+          ActionTypeId:
+            Category: Source
+            Owner: ThirdParty
+            Version: 1
+            Provider: GitHub
+          OutputArtifacts:
+          - Name: SourceCode
+          Configuration:
+            Owner: !Ref GitHubOwner
+            Repo: !Ref GitHubRepo
+            Branch: !Ref GitHubBranch
+            PollForSourceChanges: false
+            OAuthToken: !Ref GitHubOAuthToken
+          RunOrder: 1
+      # Build and Deploy, etc., stages would follow. Here is an example
+      - Name: Deploy
+        Actions:
+        - Name: CloudFormationDeploy
+          ActionTypeId:
+            Category: Deploy
+            Owner: AWS
+            Provider: CloudFormation
+            Version: '1'
+          InputArtifacts:
+            - Name: SourceCode
+          Configuration:
+            ActionMode: CREATE_UPDATE
+            Capabilities: CAPABILITY_IAM
+            RoleArn: !GetAtt CloudformationRole.Arn
+            StackName: !Ref ApplicationStackName
+            TemplatePath: !Sub "SourceCode::cfntemplatepipeline.yaml"
+          RunOrder: 1
+
+  # 'GithubWebhook' satisfies two requirements:
+  # -- Means that updates are pushed from GitHub, rather than AWS having to poll
+  # -- Means we can filter for required changes
+  GithubWebhook:
+    Type: 'AWS::CodePipeline::Webhook'
+    Properties:
+      Authentication: GITHUB_HMAC
+      AuthenticationConfiguration:
+        SecretToken: !Ref GitHubOAuthToken
+      RegisterWithThirdParty: 'true'
+      Filters:
+      - JsonPath: "$.ref"
+        MatchEquals: refs/heads/{Branch}
+      TargetPipeline: !Ref CodePipeline
+      TargetAction: Source
+      TargetPipelineVersion: !GetAtt CodePipeline.Version
+
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
         Version: "2012-10-17"
-      PolicyName: Thoushould
-    Type: "AWS::IAM::Policy"
-  S3bucket: 
-    Properties: 
-      BucketName: stagesbucket
-    Type: "AWS::S3::Bucket"
+        Statement:
+          Effect: Allow
+          Principal:
+            Service: codepipeline.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess 
+
+  CloudformationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          Effect: Allow
+          Principal:
+            Service: cloudformation.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess 
