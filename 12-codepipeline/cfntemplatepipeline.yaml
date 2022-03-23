@@ -6,17 +6,12 @@ Resources:
       ArtifactStore: 
         EncryptionKey: 
           Id: "arn:aws:iam::324320755747:user/desmond.ndambi.labs"
-        Location: 
-          Ref: ArtifactStoreS3Location
         Type: S3
       DisableInboundStageTransitions: 
         - 
           Reason: "Disabling the transition until integration tests are completed"
-          StageName: Release
       Name: dafirstci-cd
       RestartExecutionOnUpdate: true
-      RoleArn: 
-        Ref: CodePipelineServiceRole
       Stages: 
         - 
           Actions: 
@@ -26,13 +21,6 @@ Resources:
                 Owner: AWS
                 Provider: CodeDeploy
                 Version: 1
-              Configuration: 
-                ApplicationName: 
-                  - 
-                    Ref: Stelligent
-                DeploymentGroupName: 
-                  - 
-                    Ref: StelligentAdmins
               InputArtifacts: 
                 - 
                   Name: SourceOutput
@@ -46,11 +34,6 @@ Resources:
                 Owner: AWS
                 Provider: CodeDeploy
                 Version: 1
-              Configuration: 
-                ApplicationName: 
-                  Ref: Stelligent
-                DeploymentGroupName: 
-                  Ref: DeploymentGroupName
               InputArtifacts: 
                 - 
                   Name: DeployOutput
@@ -91,5 +74,5 @@ Resources:
     Type: "AWS::IAM::Policy"
   S3bucket: 
     Properties: 
-      BucketName: ArtifactStoreS3Location
+      BucketName: stagesbucket
     Type: "AWS::S3::Bucket"
