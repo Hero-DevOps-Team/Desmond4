@@ -1,39 +1,24 @@
-Ec2Instance1: 
-  Type: AWS::EC2::Instance
-  Properties: 
-    LaunchTemplate: 
-       LaunchTemplateSpecification
-    ImageId: 
-      Fn::FindInMap: 
-        - "RegionMap"
-        - Ref: "AWS::Region"
-        - "AMI"
-    KeyName: 
-      Ref: "KeyName"
-    NetworkInterfaces: 
-      - AssociatePublicIpAddress: "true"
-        DeviceIndex: "0"
-        GroupSet: 
-          - Ref: "myVPCEC2SecurityGroup"
-        SubnetId: 
-          Ref: "PublicSubnet"
-          
-Ec2Instance2: 
-  Type: AWS::EC2::Instance
-  Properties: 
-    LaunchTemplate: 
-       LaunchTemplateSpecification
-    ImageId: 
-      Fn::FindInMap: 
-        - "RegionMap"
-        - Ref: "AWS::Region"
-        - "AMI"
-    KeyName: 
-      Ref: "KeyName"
-    NetworkInterfaces: 
-      - AssociatePublicIpAddress: "true"
-        DeviceIndex: "0"
-        GroupSet: 
-          - Ref: "myVPCEC2SecurityGroup"
-        SubnetId: 
-          Ref: "PublicSubnet"
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  myLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties: 
+      LaunchTemplateName: !Sub ${AWS::StackName}-launch-template
+      LaunchTemplateData: 
+        BlockDeviceMappings: 
+          - Ebs:
+              VolumeSize: 22
+              VolumeType: gp2
+              DeleteOnTermination: true
+              Encrypted: true
+            DeviceName: /dev/xvdcz
+        CreditSpecification: 
+          CpuCredits: Unlimited
+        Monitoring: 
+          Enabled: true
+        ImageId: ami-04d5cc9b88example
+        InstanceType: t2.micro
+        KeyName: MyKeyPair
+        SecurityGroupIds: 
+          - sg-7c2270198example
+          - sg-903004f88example
