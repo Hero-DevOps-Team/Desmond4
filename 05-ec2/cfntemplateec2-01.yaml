@@ -3,7 +3,7 @@ Resources:
   myLaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties: 
-      LaunchTemplateName: !Sub ${AWS::StackName}-launch-template-1
+      LaunchTemplateName: launch-template-1
       LaunchTemplateData1: 
         BlockDeviceMappings: 
           - Ebs:
@@ -21,7 +21,7 @@ Resources:
         KeyName: MyKeyPair1
         SecurityGroupIds: 
           - sg-0762a24ffec5ca84d    
-     LaunchTemplateData2: 
+      LaunchTemplateData2: 
         BlockDeviceMappings: 
           - Ebs:
               VolumeSize: 22
@@ -37,4 +37,5 @@ Resources:
         InstanceType: c3.large
         KeyName: MyKeyPair2
         SecurityGroupIds: 
-          - sg-0762a24ffec5ca84d          
+          - sg-0762a24ffec5ca84d   
+
