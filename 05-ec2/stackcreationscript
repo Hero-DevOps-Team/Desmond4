@@ -1,0 +1,3 @@
+aws cloudformation wait stack-create-complete \
+    --stack-name "arn:aws:cloudformation:us-west-2:324320755747:stack/desmondec2stackcreation"
+    --template-body file://cfnec2template.yaml
