@@ -1,40 +1,38 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Resources:
-  ControlPortAddress:
-    Type: AWS::EC2::EIP
-    Properties:
-      Domain: vpc
-  AssociateControlPort:
-    Type: AWS::EC2::EIPAssociation
-    Properties:
-      AllocationId: "3306"
-      NetworkInterfaceId: Ref controlXface
-  WebPortAddress:
-    Type: AWS::EC2::EIP
-    Properties:
-      Domain: vpc
-  AssociateWebPort:
-    Type: AWS::EC2::EIPAssociation
-    Properties:
-      AllocationId: "192.168.0.12"
-      NetworkInterfaceId: Ref LaunchTemplateName:
-    Type: AWS::EC2::LaunchTemplate
+--- 
+AWSTemplateFormatVersion: "2010-09-09"
+Resources: 
+  AssociateControlPort: 
     Properties: 
-      LaunchTemplateName: launch-template-2   
+      AllocationId: "3306"
+      NetworkInterfaceId: "Ref controlXface"
+    Type: "AWS::EC2::EIPAssociation"
+  AssociateWebPort: 
+    Properties: 
       LaunchTemplateData2: 
         BlockDeviceMappings: 
-          - Ebs:
-              VolumeSize: 22
-              VolumeType: gp2
+          - 
+            DeviceName: /dev/xvdcuz
+            Ebs: 
               DeleteOnTermination: true
               Encrypted: true
-            DeviceName: /dev/xvdcuz
+              VolumeSize: 22
+              VolumeType: gp2
         CreditSpecification: 
           CpuCredits: Unlimited
-        Monitoring: 
-          Enabled: true
         ImageId: ami-063a9ea2ff5685f7fubuntu
         InstanceType: c3.large
         KeyName: MyKeyPair2
+        Monitoring: 
+          Enabled: true
         SecurityGroupIds: 
-          - sg-0762a24ffec5ca84d  
+          - sg-0762a24ffec5ca84d
+      LaunchTemplateName: launch-template-2
+    Type: "AWS::EC2::LaunchTemplate"
+  ControlPortAddress: 
+    Properties: 
+      Domain: vpc
+    Type: "AWS::EC2::EIP"
+  WebPortAddress: 
+    Properties: 
+      Domain: vpc
+    Type: "AWS::EC2::EIP"
