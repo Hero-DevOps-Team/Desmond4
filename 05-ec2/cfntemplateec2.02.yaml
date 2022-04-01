@@ -1,6 +1,11 @@
 --- 
 AWSTemplateFormatVersion: "2010-09-09"
-Resources: 
+Outputs:
+  EIP:
+    Description: "Elastic IP address"
+    Export:
+      Name: The IP Address of the EC2 instance
+    Value: 192.168.0.12
   AssociateControlPort: 
     Properties: 
       AllocationId: "3306"
