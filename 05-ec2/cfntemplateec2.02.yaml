@@ -3,24 +3,7 @@ Resources:
   myLaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties: 
-      LaunchTemplateName: launch-template-1
-      LaunchTemplateData1: 
-        BlockDeviceMappings: 
-          - Ebs:
-              VolumeSize: 22
-              VolumeType: gp2
-              DeleteOnTermination: true
-              Encrypted: true
-            DeviceName: /dev/xvdcz
-        CreditSpecification: 
-          CpuCredits: Unlimited
-        Monitoring: 
-          Enabled: true
-        ImageId: ami-04d5cc9b88windows
-        InstanceType: t2.micro
-        KeyName: MyKeyPair1
-        SecurityGroupIds: 
-          - sg-0762a24ffec5ca84d    
+      LaunchTemplateName: launch-template-2   
       LaunchTemplateData2: 
         BlockDeviceMappings: 
           - Ebs:
