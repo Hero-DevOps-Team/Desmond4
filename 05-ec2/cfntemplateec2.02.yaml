@@ -1,6 +1,23 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Resources:
-  myLaunchTemplate:
+  ControlPortAddress:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+  AssociateControlPort:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: "3306"
+      NetworkInterfaceId: Ref controlXface
+  WebPortAddress:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+  AssociateWebPort:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: "192.168.0.12"
+      NetworkInterfaceId: Ref LaunchTemplateName:
     Type: AWS::EC2::LaunchTemplate
     Properties: 
       LaunchTemplateName: launch-template-2   
