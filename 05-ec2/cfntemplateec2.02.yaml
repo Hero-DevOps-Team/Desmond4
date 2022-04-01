@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  myLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties: 
+      LaunchTemplateName: launch-template-1
+      LaunchTemplateData1: 
+        BlockDeviceMappings: 
+          - Ebs:
+              VolumeSize: 22
+              VolumeType: gp2
+              DeleteOnTermination: true
+              Encrypted: true
+            DeviceName: /dev/xvdcz
+        CreditSpecification: 
+          CpuCredits: Unlimited
+        Monitoring: 
+          Enabled: true
+        ImageId: ami-04d5cc9b88windows
+        InstanceType: t2.micro
+        KeyName: MyKeyPair1
+        SecurityGroupIds: 
+          - sg-0762a24ffec5ca84d    
+      LaunchTemplateData2: 
+        BlockDeviceMappings: 
+          - Ebs:
+              VolumeSize: 22
+              VolumeType: gp2
+              DeleteOnTermination: true
+              Encrypted: true
+            DeviceName: /dev/xvdcuz
+        CreditSpecification: 
+          CpuCredits: Unlimited
+        Monitoring: 
+          Enabled: true
+        ImageId: ami-063a9ea2ff5685f7fubuntu
+        InstanceType: c3.large
+        KeyName: MyKeyPair2
+        SecurityGroupIds: 
+          - sg-0762a24ffec5ca84d  
