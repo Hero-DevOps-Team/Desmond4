@@ -1,11 +1,6 @@
 --- 
 AWSTemplateFormatVersion: "2010-09-09"
-Outputs:
-  EIP:
-    Description: "Elastic IP address"
-    Export:
-      Name: The IP Address of the EC2 instance
-    Value: 192.168.0.12
+Outputs: 
   AssociateControlPort: 
     Properties: 
       AllocationId: "3306"
@@ -37,6 +32,11 @@ Outputs:
     Properties: 
       Domain: vpc
     Type: "AWS::EC2::EIP"
+  EIP: 
+    Description: "Elastic IP address"
+    Export: 
+      Name: "The IP Address of the EC2 instance"
+    Value: "192.168.0.12"
   WebPortAddress: 
     Properties: 
       Domain: vpc
