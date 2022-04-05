@@ -1,6 +1,6 @@
 --- 
 AWSTemplateFormatVersion: "2010-09-09"
-Outputs: 
+Ressources: 
   AssociateControlPort: 
     Properties: 
       AllocationId: "3306"
